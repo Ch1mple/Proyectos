@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.2">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Space Invaders</title>
+    <style>
+
+        body{
+            background:url(space.jpg) no-repeat center top;
+			overflow: hidden;
+			margin:auto;
+        }
+        
+
+	  	.spirite0{
+			visibility:hidden;
+	  	}
+
+        .spirite1{
+            background-repeat: no-repeat;
+            width:40px;
+            height: 30px;
+			display:inline-block;
+			box-sizing:border-box;
+	  	}    
+      	.spirite2{
+            background-repeat: no-repeat;
+            width:40px;
+            height: 30px;
+			display:inline-block;
+			box-sizing:border-box;
+	  	}         
+
+        .spirite3{
+            background-repeat: no-repeat;
+            width:40px;
+            height: 30px;
+			display:inline-block;
+			box-sizing:border-box;
+	  	}     
+
+
+
+     	#x{
+        background-image:url(tank.png);
+            background-repeat: no-repeat;
+            height: 30px;
+			display:inline-block;
+			box-sizing:border-box;
+			position: absolute;
+            bottom:10px;			
+
+		}
+
+
+		#imagen{
+			width:25px;
+			height:25px;
+            position:absolute;
+            display:block;
+            bottom:100px;
+        }
+
+
+		#content{
+            height: 100%;
+			width: 100%;
+			left: 0;
+			top: 0;
+			overflow: hidden;
+			position: fixed;
+			margin:auto;
+        }
+
+
+		#puntos{
+			width:100px;
+			height:100px;
+            
+
+			float: left;
+			color: snow;
+        }
+
+		#highscore{
+			width:100px;
+			height:100px;
+            
+
+			float: right;
+			color: snow;
+        }
+
+#content {
+    cursor: none;
+}
+
+
+     
+    </style>
+</head>
+<body>
+	<audio src="spaceinvaders1.mpeg" autoplay="autoplay" loop="loop"></audio>
+	<div id="puntos"></div><div id="highscore"></div>
+	<div id="content">
+		<div id="lienzo">
+
+                
+			
+                 <div id="x"></div>
+            </div>
+          <img src="Bala.png" id="imagen"/>
+		</div>  
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"  crossorigin="anonymous"></script>
+    <script>
+
+
+
+		//DRAW STAGE
+
+        
+        var stage=[
+					[{Spirite:1},{Spirite:1},{Spirite:1},{Spirite:1},{Spirite:1},{Spirite:1},{Spirite:1},{Spirite:1},{Spirite:1},{Spirite:1}],
+					[{Spirite:2},{Spirite:2},{Spirite:2},{Spirite:2},{Spirite:2},{Spirite:2},{Spirite:2},{Spirite:2},{Spirite:2},{Spirite:2}],
+                    [{Spirite:2},{Spirite:2},{Spirite:2},{Spirite:2},{Spirite:2},{Spirite:2},{Spirite:2},{Spirite:2},{Spirite:2},{Spirite:2}],
+                    [{Spirite:3},{Spirite:3},{Spirite:3},{Spirite:3},{Spirite:3},{Spirite:3},{Spirite:3},{Spirite:3},{Spirite:3},{Spirite:3}],
+					[{Spirite:3},{Spirite:3},{Spirite:3},{Spirite:3},{Spirite:3},{Spirite:3},{Spirite:3},{Spirite:3},{Spirite:3},{Spirite:3}]
+				];
+
+        var content = ''
+
+        for(r=0;r<stage.length;r++){
+				content += '<div class="row">';
+					for(c=0;c<stage[r].length;c++){
+						//stage[r][c].Spirite=1
+						content += '<div class="alien spirite'+stage[r][c].Spirite+'"></div>';
+	
+					}
+					content += '</div>';
+				}
+		$('#lienzo').append(content);
+
+
+
+
+
+
+
+
+
+
+
+		//MOUSE / TANK
+
+		var x;
+		x=$(document);
+		x.ready(inicializar);
+		x.mouseleave(moverRatonOff);
+		
+		function inicializar(){
+			var x;
+			x=$(document);
+			x.mousemove(moverRaton);
+			
+		}
+		
+		
+		function moverRaton(){
+			var x;
+			x=$('#x')
+			//x.text('Coordenada X = '+event.clientX);
+			x.text(event.clientX);
+			$('#x').css("left",event.clientX +'px');
+
+		/*	//X de la bola
+			var bola;
+			bola=$('#imagen')
+
+			bola.text(event.clientX);
+			$('#imagen').css("left",event.clientX +'px');*/
+		}
+		
+		function moverRatonOff(){
+
+			var x=50;
+			
+			$('#x').css("left",x +'%');
+			
+			$('#x').text($('#x').offset().left);	
+
+
+		/*	//X de la bola
+			var bola=50;
+			
+			$('#imagen').css("left",x +'%');
+			
+			$('#imagen').text($('#imagen').offset().left);*/
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		//CHANGE IMAGEN
+
+		var index = 0;
+		var listaimgpink = ["invaderspink1.png", "invaderspink2.png"];
+		var listaimgblue = ["invadersblue1.png", "invadersblue2.png"];
+		var listaimggreen = ["invadersgreen1.png", "invadersgreen2.png"];
+
+		$(function() {
+			setInterval(changeImage, 1000);
+		});
+
+		function changeImage() {
+			$('.spirite1').css("background-image", 'url(' + listaimgpink[index] + ')');
+			$('.spirite2').css("background-image", 'url(' + listaimgblue[index] + ')');
+			$('.spirite3').css("background-image", 'url(' + listaimggreen[index] + ')');
+			index++;               
+			if(index == 2)
+				index = 0;
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+		//MOVEMENTS ALIENS
+
+		$(document).ready(function(){
+
+			setInterval(function(){
+				maxwidth=$(window).width()-400;
+				maxheight=$(window).height()-50;
+
+				$("#lienzo").animate({'margin-left':maxwidth},3500)
+				
+					if($(window).width()-400==maxwidth){
+						$("#lienzo").animate({'margin-top':'100px'},1750) 
+						$("#lienzo").animate({'margin-left':'0px'},3500)
+						$("#lienzo").animate({'margin-top':'200px'},1750) 
+						$("#lienzo").animate({'margin-left':maxwidth},3500)
+							if($(window).width()-400==maxwidth){
+								$("#lienzo").animate({'margin-top':'300px'},1750) 
+								$("#lienzo").animate({'margin-left':'0px'},3500)
+								$("#lienzo").animate({'margin-top':'400px'},1750) 
+								$("#lienzo").animate({'margin-left':maxwidth},3500)
+									if($(window).width()-400==maxwidth){
+										$("#lienzo").animate({'margin-top':'500px'},1750) 
+										$("#lienzo").animate({'margin-left':'0px'},3500)
+										$("#lienzo").animate({'margin-top':'600px'},1750, checkCollisions) 
+										$("#lienzo").animate({'margin-left':maxwidth},3500, checkCollisions)
+										
+										/*if($(lienzo).height()>=maxheight){
+										alert('GAME OVER')
+										}*/
+									}
+							}
+					}
+			},1000); 
+		});
+
+
+
+
+
+
+
+
+
+
+
+		//POSITIONS TANK AND ALIENS
+
+		function getPositions(box) {
+		var $box = $(box);
+		var pos = $box.position();
+		var width = $box.width();
+		var height = $box.height();
+		return [ [ pos.left, pos.left + width ], [ pos.top, pos.top + height ] ];
+		}
+				
+		function comparePositions(p1, p2) {
+			var x1 = p1[0] < p2[0] ? p1 : p2;
+			var x2 = p1[0] < p2[0] ? p2 : p1;
+			return x1[1] > x2[0] || x1[0] === x2[0] ? true : false;
+		}
+
+		function checkCollisions(){
+			var box = $("#lienzo")[0];
+			var pos = getPositions(box);
+
+			var pos2 = getPositions(this);
+			var horizontalMatch = comparePositions(pos[0], pos2[0]);
+			var verticalMatch = comparePositions(pos[1], pos2[1]);            
+			var match = horizontalMatch && verticalMatch;
+			if (match) {
+				// $("body").append("<p>COLLISION !!!</p>"); 
+				alert('puntuacion: ' + puntos + '\nGAME OVER');
+				document.location.reload();
+			}
+		}
+
+
+
+
+
+
+
+
+
+
+
+			//BULLETS
+
+
+			//Definimos las variables:
+			var y=1000;           
+			var x=0;
+			var controlY=150;  
+			var controlX=1;  
+			var velocidad=4;
+	 
+			// Cada 6 mili-segundos se va a ejecutar la función mover que comprueba
+					// las colisiones de la pelota
+			var intervalo=setInterval("mover()",6);
+	 
+			function mover(){
+			//plataforma=$("#x")
+			var elemento = document.getElementById('x');
+			var posicion = elemento.getBoundingClientRect();
+			//console.log(plataforma);
+				//Eje Y
+				if(controlY==1){ 
+					y+=velocidad;
+				}else{         
+					y-=velocidad;
+				}
+				if(y<=0){
+					controlY=1;
+					y=1000;
+					document.getElementById("imagen").style.left=String(posicion.left)+"px";
+
+				}else if(y>=document.getElementById("content").offsetHeight-25){ 
+				// Esto significa si y es mayor o igual a la altura que tiene el lienzo menos el tamaño de la imagen
+	 
+					controlY=0;	
+					y=document.getElementById("content").offsetHeight-25;
+
+
+				}
+
+				
+				console.log(posicion.top, posicion.right, posicion.bottom, posicion.left);
+
+
+
+				x=posicion.left
+
+
+
+			
+				
+				document.getElementById("imagen").style.top=String(y)+"px";
+
+				posicionbullet=document.getElementById("imagen").getBoundingClientRect();
+
+				//$('.block').removeClass('hightlight');
+				$('.row').each(function(){
+					var bounds = this.getBoundingClientRect();
+					if (bounds.bottom >= posicionbullet.top && bounds.top <= posicionbullet.top){
+						$(this).children('.alien:not(.spirite0)').each(function(){
+
+							var bounds = this.getBoundingClientRect();
+							if (bounds.left <= posicionbullet.left && bounds.right >= posicionbullet.left){
+								
+								$(this).addClass('spirite0');
+							
+								puntos+=5;
+								
+								var highscore = localStorage.getItem("highscore");
+
+								if(highscore !== null){
+									if (puntos > highscore) {
+										localStorage.setItem("highscore", puntos);  
+										highscore=puntos    
+									}
+								}
+								else{
+									localStorage.setItem("highscore", puntos);
+								}
+								$('#puntos').text( "Score: " +puntos);
+								$('#highscore').text( "Highscore: " +highscore);
+								
+								if (puntos>=250) {
+										alert('WINNER')
+										document.location.reload();
+									}
+
+								console.log(puntos)
+								controlY=0;
+								y=document.getElementById("content").offsetHeight;
+								document.getElementById("imagen").style.left=String(posicion.left)+"px";
+							}
+						})
+
+					}
+				})
+
+				
+				
+				
+			}
+
+
+
+var puntos=0;
+
+
+            /*$("#lienzo").animate({'margin-left':maxwidth},3500)
+           
+		   if($(window).width()-400==maxwidth){
+			   	for (let n = 100; n < 500; n+100) {
+
+					$("#lienzo").animate({'margin-top':n},3500) 
+			   		$("#lienzo").animate({'margin-left':'0px'},3500)
+				   		n+100;
+
+			   	}
+			 
+		   }
+
+   },1000); 
+
+   });
+*/
+
+
+
+
+
+
+
+
+
+    </script>
+</body>
+</html>

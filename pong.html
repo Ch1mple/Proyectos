@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	  <title></title>
+
+		<style>
+
+		.game{
+
+			justify-content:center;
+		}
+		
+		
+		.block{
+			width:65px;
+			height: 18px;
+			background:blue;
+			display:inline-block;
+			margin: 10px;
+			border: 3px solid #73AD21;  
+			box-sizing:border-box;
+		}
+		
+		#x{
+			width:65px;
+			background:rgb(6, 167, 153);
+			position:absolute;
+			height: 18px;
+			margin: 10px;
+			border: 3px solid #73AD21; 
+			bottom:10px;			
+			line-height: 1em;
+			margin:auto;
+			
+		}
+		
+        #imagen{
+			width:25px;
+			height:25px;
+            position:absolute;
+            display:block;
+            bottom:100px;
+        }
+ 
+        #lienzo{
+            height: 100%;
+			width: 100%;
+			left: 0;
+			top: 0;
+			overflow: hidden;
+			position: fixed;
+			margin:auto;
+        }
+        
+	  .life0{
+		visibility:hidden;
+	  }
+		
+		
+		
+		
+		
+		</style>
+	</head>
+	<body>
+	
+		<!--	body {
+			overflow:hidden;
+			margin:auto;
+			width:70%;
+		}-->
+
+	
+	
+		<div id="lienzo">
+			<div id="game"></div>
+			<img src="eclipse.png" id="imagen"/>
+			
+			<div id="x"></div>
+		</div>
+			
+
+	
+		<script src="https://code.jquery.com/jquery-3.2.1.min.js"  crossorigin="anonymous"></script>
+		<script>
+			var content = ''
+				var stage=[
+					[{life:0},{life:2},{life:1},{life:1},{life:1},{life:1},{life:2},{life:2},{life:2},{life:2},{life:2},{life:2}],
+					[{life:0},{life:0},{life:1},{life:1},{life:1},{life:1},{life:2},{life:2},{life:2},{life:2},{life:2},{life:2},{life:2}],
+					[{life:0},{life:0},{life:1},{life:1},{life:1},{life:1},{life:2},{life:2},{life:2},{life:2},{life:2},{life:2},{life:2}]
+				];
+
+			for(r=0;r<stage.length;r++){
+				content += '<div class="row">';
+					for(c=0;c<stage[r].length;c++){
+
+						content += '<div class="block life'+stage[r][c].life+'">'+stage[r][c].life+'</div>';
+						/*if(stage[r][c].life==0){
+							$( ".block" ).remove( ".life" );
+
+						}	*/		
+					}
+					content += '</div>';
+				}
+				$('#game').append(content);
+				
+				
+				
+				
+				var x;
+				x=$(document);
+				x.ready(inicializar);
+				x.mouseleave(moverRatonOff);
+				
+				function inicializar(){
+					var x;
+					x=$(document);
+					x.mousemove(moverRaton);
+					
+				}
+				
+				
+				function moverRaton(){
+					var x;
+					x=$('#x')
+					x.text('Coordenada X = '+event.clientX);
+					x=$('#y')
+					x.text('Coordenada Y = '+event.clientY);
+					
+					
+					$('#x').css("left",event.clientX +'px');
+					
+					
+					
+				/*	$('#x').limit('140','#charsLeft');
+					if ($('#x').parent().width() > $(window).width()) {
+						$('#x').width($(window).width());
+					}
+					$('#x').css({position: "center"});
+					
+					
+					*/
+					//-width block
+
+				}
+				
+				function moverRatonOff(){
+
+					var x=50;
+					
+					$('#x').css("left",x +'%');
+					
+					$('#x').text('Coordenada X = '+$('#x').offset().left);	
+
+				}
+				
+				
+				
+				
+				
+				
+				
+
+
+			//Definimos las variables:
+			var y=0;           
+			var x=250;
+			var controlY=1;  
+			var controlX=1;  
+			var velocidad=2;
+	 
+			// Cada 6 mili-segundos se va a ejecutar la función mover que comprueba
+					// las colisiones de la pelota
+			var intervalo=setInterval("mover()",6);
+	 
+			function mover(){
+			plataforma=$("#x")
+			console.log(x);
+				//Eje Y
+				if(controlY==1){ 
+					y+=velocidad;
+				}else{         
+					y-=velocidad;
+				}
+				if(y<=0){
+					controlY=1;
+					y=0;
+				}else if((y>=document.getElementById("lienzo").offsetHeight-56) &&
+				x>=plataforma.offset().left
+				&& (plataforma.width()+plataforma.offset().left)>=x){
+				
+
+				
+				controlY=0;
+				
+				}else if(y>=document.getElementById("lienzo").offsetHeight-25){ 
+				// Esto significa si y es mayor o igual a la altura que tiene el lienzo menos el tamaño de la imagen
+	 
+					controlY=0;
+					y=document.getElementById("lienzo").offsetHeight-25;
+
+					
+					
+					
+					if(y<=document.getElementById("lienzo").offsetHeight-25) {
+						alert("GAME OVER");
+						document.location.reload();
+					}
+
+				}
+	 
+				//Eje X
+				if(controlX==1){ 
+					x+=velocidad;
+				}else{         
+					x-=velocidad;
+				}
+				if(x<=0){
+					controlX=1;
+					x=0;
+				}else if(x>=document.getElementById("lienzo").offsetWidth-25){
+					controlX=0;
+					x=document.getElementById("lienzo").offsetWidth-25;
+				}
+				document.getElementById("imagen").style.left=String(x)+"px";
+				document.getElementById("imagen").style.top=String(y)+"px";
+				
+				
+				
+				
+				//$('.block').removeClass('hightlight');
+			$('.row').each(function(){
+				var bounds = this.getBoundingClientRect();
+				if (bounds.bottom >= y && bounds.top <= y){
+					$(this).children('.block:not(.life0)').each(function(){
+					var bounds = this.getBoundingClientRect();
+					if (bounds.left <= x && bounds.right >= x){
+						$(this).addClass('life0');
+						controlY=0;
+					}
+				})
+
+				}
+			})
+
+				
+				
+				
+			}
+	 
+
+	 
+	 
+	 
+	 
+
+	 
+
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+
+		</script>
+	</body>
+</html>
